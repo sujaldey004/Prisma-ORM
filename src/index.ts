@@ -11,20 +11,29 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function insertData(email:string, password:string, firstName:string, lastName:string){
-    const res = await prisma.user.create({
-        data:{
-            email,
-            password,
-            firstName,
-            lastName
-        },
-        select:{
-            email:true,
-            password:true
-        }
-    })
-    console.log(res);
+
+// Type Checking
+interface UpdateData{
+    firstName:string,
+    lastName:string
 }
 
-insertData("su0pandit@gmail.com", "12ka42ka1", "Sujal", "Dey");
+
+/* Take Two args 
+1. email
+2. object of firstName and lastName
+ */
+async function updateUser(email : string, {
+    firstName,
+    lastName
+} : UpdateData     /* It can be :any means without ts */){
+   const res = await prisma.user.update({
+        where:{email},
+        data:{firstName, lastName},
+        select:{firstName:true, lastName:true}
+    })
+    console.log(res)
+}
+
+
+updateUser("su0pandit@gmail.com", {firstName:"Your", lastName:"Sam"})
